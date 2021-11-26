@@ -62,7 +62,7 @@ public:
      * a relative path.
      */
     void setExtraDirectory(const QString& dir) { m_lastOpenDir = dir; }
-    void activateFile(const QString& fileName);
+    void activateFile(const QString& fileName, const int& line = 0);
     bool activeLine(QString& filename, int& lineNo);
     bool activeLine(QString& filename, int& lineNo, DbgAddr& address);
     bool hasWindows() const { return count() > 0; }

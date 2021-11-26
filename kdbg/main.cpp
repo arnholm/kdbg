@@ -70,6 +70,9 @@ int main(int argc, char** argv)
     opt0("x", i18n("use language XSLT (deprecated)"));
     opt("a", i18n("specify arguments of debugged executable"), "args");
     opt("p", i18n("specify PID of process to debug"), "pid");
+    opt("s", i18n("specify source file"), "source");
+    opt("n", i18n("specify source file line number"), "line"); 
+    opt0("noterm", i18n("no output terminal"));
     parser.addPositionalArgument(QLatin1String("[program]"), i18n("path of executable to debug"));
     parser.addPositionalArgument(QLatin1String("[core]"), i18n("a core file to use"));
 
@@ -80,6 +83,10 @@ int main(int argc, char** argv)
 
     DebuggerMainWnd* debugger = new DebuggerMainWnd;
     debugger->setObjectName("mainwindow");
+    
+    if (parser.isSet("noterm")){
+       debugger->enableTerminal(false);
+    }
 
     /* type libraries */
     TypeTable::initTypeLibraries();
@@ -118,6 +125,7 @@ int main(int argc, char** argv)
 
     QString pid = parser.value("p");
     QString programArgs = parser.value("a");
+    QString sourceFile  = parser.value("s");
     QStringList posArgs = parser.positionalArguments();
 
     if (!restored && posArgs.count() > 0) {
@@ -142,6 +150,17 @@ int main(int argc, char** argv)
 		debugger->overrideProgramArguments(programArgs);
 	    }
 	}
+	
+	// initial source file
+	if (!sourceFile.isEmpty()) {
+       int lineNo = 0;
+       QString sourceLine  = parser.value("n");
+       if(!sourceLine.isEmpty()) {
+          lineNo = sourceLine.toInt();
+       }       
+       debugger->fileOpen(sourceFile,lineNo);
+    }
+	
     }
 
     int rc = app.exec();

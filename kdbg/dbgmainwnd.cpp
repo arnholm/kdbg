@@ -57,6 +57,7 @@ static const char defaultHeaderFilter[] = "*.h *.hh *.hpp *.h++";
 
 DebuggerMainWnd::DebuggerMainWnd() :
 	KXmlGuiWindow(),
+	m_useTerminal(true),
 	m_debugger(0),
 #ifdef GDB_TRANSCRIPT
 	m_transcriptFile(GDB_TRANSCRIPT),
@@ -359,6 +360,11 @@ void DebuggerMainWnd::initKAction()
     foreach(QAction* action, actions) {
 	connect(action, SIGNAL(triggered()), this, SLOT(updateUI()));
     }
+}
+
+void DebuggerMainWnd::enableTerminal(bool useTerminal)
+{
+    m_useTerminal = useTerminal;
 }
 
 void DebuggerMainWnd::updateToolButtonStyle(Qt::ToolButtonStyle style)
@@ -933,6 +939,8 @@ void DebuggerMainWnd::slotDebuggerStarting()
     }
 
     m_ttyLevel = m_debugger->ttyLevel();
+    
+    if(!m_useTerminal)return;
 
     QString ttyName;
     switch (m_ttyLevel) {
@@ -1166,6 +1174,17 @@ void DebuggerMainWnd::slotEditValue()
 	// determine the text to edit
 	QString text = m_debugger->driver()->editableValue(expr);
 	wnd->editValue(expr, text);
+    }
+}
+
+void DebuggerMainWnd::fileOpen(const QString& fileName, int lineNo)
+{
+    if (!fileName.isEmpty())
+    {
+      QFileInfo fi(fileName);
+      m_lastDirectory = fi.path();
+      m_filesWindow->setExtraDirectory(m_lastDirectory);
+      m_filesWindow->activateFile(fileName,lineNo);
     }
 }
 

@@ -88,9 +88,9 @@ void WinStack::activate(const QString& fileName, int lineNo, const DbgAddr& addr
     activatePath(fi.absoluteFilePath(), lineNo, address);
 }
 
-void WinStack::activateFile(const QString& fileName)
+void WinStack::activateFile(const QString& fileName, const int& line)
 {
-    activatePath(fileName, 0, DbgAddr());
+    activatePath(fileName, line, DbgAddr());
 }
 
 bool WinStack::activatePath(QString pathName, int lineNo, const DbgAddr& address)

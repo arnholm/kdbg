@@ -39,6 +39,7 @@ public:
     ~DebuggerMainWnd();
 
     bool debugProgram(const QString& exe, const QString& lang);
+    void enableTerminal(bool useTerminal);
 
     /**
      * Specifies the file where to write the transcript.
@@ -53,6 +54,9 @@ public:
     void setCoreFile(const QString& corefile);
     void setRemoteDevice(const QString &remoteDevice);
     void overrideProgramArguments(const QString& args);
+    
+    // open the file and set cursor at lineNo
+    void fileOpen(const QString& fileName,int lineNo = 0);
 
 protected:
     // session properties
@@ -65,6 +69,8 @@ protected:
     void initAnimation();
     void initStatusBar();
     void initKAction();
+    
+    bool m_useTerminal;
 
     // view windows
     WinStack* m_filesWindow;
